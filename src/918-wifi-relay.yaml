@@ -1,0 +1,46 @@
+esp8266:
+  board: esp01_1m
+# https://esphome.io/components/esp8266 "early_pin_init (Optional, boolean): Specifies
+# whether pins should be initialised as early as possible to known values. Recommended 
+# value is false where switches are involved, as these will toggle when updating the 
+# firmware or when restarting the device"
+# setting this to false seems to prevent the gadget from triggering the relay on boot.
+# that's good: we don't want the garage door to open/close on boot.
+  early_pin_init: false
+
+packages:
+  blinky: !include
+    file: ../include/interval-blinky.yaml
+    vars:
+      builtin_led_pin: "GPIO2"
+  wifi: !include
+    file: ../include/wifi.yaml
+
+switch:
+  - platform: gpio
+    name: "Relay 0"
+    id: relay_0_id
+    restore_mode: ALWAYS_OFF
+    pin: 
+      number: GPIO0
+      inverted: true
+      mode:
+        output: true
+    on_turn_on:
+      # the action here is to "pulse" the switch -- turn it off 
+      # after it has been turned on for 250ms.
+      - delay: 250ms
+      - switch.turn_off: relay_0_id
+
+
+
+# "All Device" baseline stuff here
+
+<<: !include 
+  file: ../include/esp8266-device-baseline.yaml
+  vars:
+    device_hostname: "m-wrk-opener-5e28db-918"
+    device_friendly_name: "Workshop Garage Door Opener"
+    device_comment: "Board 918 esp8266 ESP-01S with relay."
+
+

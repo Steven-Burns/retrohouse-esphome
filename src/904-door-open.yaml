@@ -1,0 +1,35 @@
+esp32:
+  board: nodemcu-32s
+  cpu_frequency: 240MHZ
+  framework:
+    type: arduino
+
+packages:
+  diagnostics: !include 
+    file: ../include/diagnostics.yaml
+  wifi: !include
+    file: ./../include/wifi.yaml
+  blinky: !include
+    file: ./../include/interval-blinky.yaml
+    vars:
+      builtin_led_pin: "GPIO2"
+
+binary_sensor:
+  - platform: gpio
+    name: "Door Open Sensor"
+    id: hall_sensor_0_id
+    device_class: door
+    pin:
+      number: GPIO4
+      mode:
+        input: true
+        pulldown: false
+
+# "All Device" baseline stuff here
+
+<<: !include 
+  file: ./../include/esp32-device-baseline.yaml
+  vars:
+    device_hostname: "w-gar-c7033c-904"
+    device_friendly_name: "Workshop Garage Door Sensor"
+    device_comment: "Garage door open sensor on board 904."
