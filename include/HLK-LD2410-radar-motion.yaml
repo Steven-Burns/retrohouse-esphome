@@ -19,7 +19,6 @@ uart:
 ld2410:
   - id: ${radar_id}
     uart_id: ${uart_id}
-    throttle: 2s
 
 globals:
    - id: ${radar_id}_target_detected
